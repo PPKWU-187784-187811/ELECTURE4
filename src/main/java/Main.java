@@ -1,7 +1,9 @@
 import implementation.ZIPLibrary;
 import implementations.SimpleAesLibrary;
+import implementations.SimpleChecksumCalculator;
 import intefaces.IZIPLibrary;
 import interfaces.AesLibrary;
+import interfaces.ChecksumCalculator;
 import org.eclipse.jetty.http.HttpStatus;
 
 import static spark.Spark.post;
@@ -14,6 +16,7 @@ public class Main {
 
     private static IZIPLibrary zipLibrary = new ZIPLibrary();
     private static AesLibrary aesLibrary = new SimpleAesLibrary();
+    private static ChecksumCalculator checksumCalculator = new SimpleChecksumCalculator();
 
     public static void main(String[] args) {
         post("/file/ziper/:source/:destination/:zipFileName/:password", (req, res) -> {
@@ -73,8 +76,16 @@ public class Main {
             }
         }, new JsonTransformer());
 
-        post("/file/calculator", (req, res) -> {
-            return null;
-        });
+        post("/file/calculator/:fileInputName/:algorithm", (req, res) -> {
+            try {
+                String fileInputNameParam = ":fileInputName";
+                String algorithmParam = ":algorithm";
+                String sum = checksumCalculator.calculate(fileInputNameParam, algorithmParam);
+                return new ChecksumDto(sum);
+            } catch (Exception ex) {
+                res.status(HttpStatus.BAD_REQUEST_400);
+                return ex.getMessage();
+            }
+        }, new JsonTransformer());
     }
 }
