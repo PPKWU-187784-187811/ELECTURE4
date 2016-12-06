@@ -7,27 +7,27 @@ import static spark.Spark.post;
 public class Main {
 
     public static void main(String[] args){
-        post("/file/zip/", (req, res) -> {
+        post("/file/ziper/", (req, res) -> {
             return null;
         });
 
-        post("/file/unzip/", (req, res) -> {
+        post("/file/unziper/", (req, res) -> {
             return null;
         });
 
-        post("/file/download", (req, res) -> {
+        post("/file/downloader/", (req, res) -> {
             return null;
         });
 
-        post("/file/encrypt/", (req, res) -> {
+        post("/file/encryptor/", (req, res) -> {
             return null;
         });
 
-        post("/file/decrypt/", (req, res) -> {
+        post("/file/descriptor/", (req, res) -> {
             return null;
         });
 
-        post("/file/calculate", (req, res) -> {
+        post("/file/calculator", (req, res) -> {
             return null;
         });
     }
