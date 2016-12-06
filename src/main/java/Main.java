@@ -30,8 +30,17 @@ public class Main {
             }
         }, new JsonTransformer());
 
-        post("/file/unziper/", (req, res) -> {
-            return null;
+        post("/file/unziper/:source/:destination/:password", (req, res) -> {
+            try {
+                String source = ":source";
+                String destination = ":destination";
+                String password = ":password";
+                zipLibrary.decompress(source, destination, password);
+                return "OK";
+            } catch (Exception ex) {
+                res.status(HttpStatus.BAD_REQUEST_400);
+                return ex.getMessage();
+            }
         });
 
         post("/file/downloader/", (req, res) -> {
