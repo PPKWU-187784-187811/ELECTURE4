@@ -7,6 +7,7 @@ import intefaces.IZIPLibrary;
 import interfaces.AesLibrary;
 import interfaces.ChecksumCalculator;
 import org.eclipse.jetty.http.HttpStatus;
+import spark.Response;
 
 import static spark.Spark.post;
 
@@ -29,10 +30,9 @@ public class Main {
                 String zipFileName = req.params(":zipFileName");
                 String password = req.params(":password");
                 zipLibrary.compress(source, destination, zipFileName, password);
-                return "OK";
+                return new Result(true);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
 
@@ -42,10 +42,9 @@ public class Main {
                 String destination = req.params(":destination");
                 String password = req.params(":password");
                 zipLibrary.decompress(source, destination, password);
-                return "OK";
+                return new Result(true);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
 
@@ -54,10 +53,9 @@ public class Main {
                 String url = req.params(":url");
                 String file = req.params(":file");
                 httpLibrary.downloadFile(url, file);
-                return "OK";
+                return new Result(true);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
 
@@ -67,10 +65,9 @@ public class Main {
                 String fileOutputNameParam = req.params(":fileOutputName");
                 String key = req.params(":key");
                 aesLibrary.encrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
-                return "Ok";
+                return new Result(true);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
 
@@ -80,10 +77,9 @@ public class Main {
                 String fileOutputNameParam = req.params(":fileOutputName");
                 String key = req.params(":key");
                 aesLibrary.decrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
-                return "Ok";
+                return new Result(true);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
 
@@ -94,9 +90,13 @@ public class Main {
                 String sum = checksumCalculator.calculate(fileInputNameParam, algorithmParam);
                 return new ChecksumDto(sum);
             } catch (Exception ex) {
-                res.status(HttpStatus.BAD_REQUEST_400);
-                return ex.getMessage();
+                return handleError(res, ex);
             }
         }, new JsonTransformer());
+    }
+
+    private static Result handleError(Response res, Exception ex) {
+        res.status(HttpStatus.BAD_REQUEST_400);
+        return new Result(false, ex.getMessage());
     }
 }
