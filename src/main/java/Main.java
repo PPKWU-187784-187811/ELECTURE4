@@ -64,7 +64,7 @@ public class Main {
                 String fileInputNameParam = req.params(":fileInputName");
                 String fileOutputNameParam = req.params(":fileOutputName");
                 String key = req.params(":key");
-                aesLibrary.encrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
+                aesLibrary.encrypt(fileInputNameParam, fileOutputNameParam, key);
                 return new Result(true);
             } catch (Exception ex) {
                 return handleError(res, ex);
@@ -76,7 +76,7 @@ public class Main {
                 String fileInputNameParam = req.params(":fileInputName");
                 String fileOutputNameParam = req.params(":fileOutputName");
                 String key = req.params(":key");
-                aesLibrary.decrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
+                aesLibrary.decrypt(fileInputNameParam, fileOutputNameParam, key);
                 return new Result(true);
             } catch (Exception ex) {
                 return handleError(res, ex);
