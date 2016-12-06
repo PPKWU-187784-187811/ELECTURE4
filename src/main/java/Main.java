@@ -38,7 +38,7 @@ public class Main {
             return null;
         });
 
-        post("/file/encrypter/:fileInputName/:fileOutputName/:key", (req, res) -> {
+        post("/file/encryptor/:fileInputName/:fileOutputName/:key", (req, res) -> {
             try {
                 String fileInputNameParam = ":fileInputName";
                 String fileOutputNameParam = req.params(":fileOutputName");
@@ -51,9 +51,18 @@ public class Main {
             }
         }, new JsonTransformer());
 
-        post("/file/descriptor/", (req, res) -> {
-            return null;
-        });
+        post("/file/descriptor/:fileInputName/:fileOutputName/:key", (req, res) -> {
+            try {
+                String fileInputNameParam = ":fileInputName";
+                String fileOutputNameParam = req.params(":fileOutputName");
+                String key = req.params(":key");
+                aesLibrary.decrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
+                return "Ok";
+            } catch (Exception ex) {
+                res.status(HttpStatus.BAD_REQUEST_400);
+                return ex.getMessage();
+            }
+        }, new JsonTransformer());
 
         post("/file/calculator", (req, res) -> {
             return null;
