@@ -1,3 +1,7 @@
+import implementations.SimpleAesLibrary;
+import interfaces.AesLibrary;
+import org.eclipse.jetty.http.HttpStatus;
+
 import static spark.Spark.post;
 
 /**
@@ -5,6 +9,8 @@ import static spark.Spark.post;
  */
 
 public class Main {
+
+    private static AesLibrary aesLibrary = new SimpleAesLibrary();
 
     public static void main(String[] args){
         post("/file/ziper/", (req, res) -> {
@@ -19,9 +25,18 @@ public class Main {
             return null;
         });
 
-        post("/file/encryptor/", (req, res) -> {
-            return null;
-        });
+        post("/file/encrypter/:fileInputName/:fileOutputName/:key", (req, res) -> {
+            try {
+                String fileInputNameParam = ":fileInputName";
+                String fileOutputNameParam = req.params(":fileOutputName");
+                String key = req.params(":key");
+                aesLibrary.encrypt(req.params(fileInputNameParam), fileOutputNameParam, key);
+                return "Ok";
+            } catch (Exception ex) {
+                res.status(HttpStatus.BAD_REQUEST_400);
+                return ex.getMessage();
+            }
+        }, new JsonTransformer());
 
         post("/file/descriptor/", (req, res) -> {
             return null;
