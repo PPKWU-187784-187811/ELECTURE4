@@ -1,4 +1,6 @@
+import implementation.ZIPLibrary;
 import implementations.SimpleAesLibrary;
+import intefaces.IZIPLibrary;
 import interfaces.AesLibrary;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -10,12 +12,23 @@ import static spark.Spark.post;
 
 public class Main {
 
+    private static IZIPLibrary zipLibrary = new ZIPLibrary();
     private static AesLibrary aesLibrary = new SimpleAesLibrary();
 
-    public static void main(String[] args){
-        post("/file/ziper/", (req, res) -> {
-            return null;
-        });
+    public static void main(String[] args) {
+        post("/file/ziper/:source/:destination/:zipFileName/:password", (req, res) -> {
+            try {
+                String source = ":source";
+                String destination = ":destination";
+                String zipFileName = ":zipFileName";
+                String password = ":password";
+                zipLibrary.compress(source, destination, zipFileName, password);
+                return "OK";
+            } catch (Exception ex) {
+                res.status(HttpStatus.BAD_REQUEST_400);
+                return ex.getMessage();
+            }
+        }, new JsonTransformer());
 
         post("/file/unziper/", (req, res) -> {
             return null;
